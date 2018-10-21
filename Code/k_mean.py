@@ -22,7 +22,7 @@ def k_mean(K, genes):
         if centroids == centroids_new:
             print(np.asarray(labels, dtype=float))
             print(expect)
-            return cluster
+            return cluster,labels
         else:
             centroids = centroids_new
             labels, cluster, centroids_new = add_to_cluster(centroids)
@@ -94,17 +94,23 @@ def euclidean(point1, point2):
 
 
 c, target = hier_agg_cluster(K)
+k_mean_cluster,labels = k_mean(K, genes)
 testData = data[:, 2:]
 pca = PCA(n_components=len(testData[0]))
 d = pca.fit_transform(testData)
-
+fig, ax = plt.subplots(nrows=1, ncols=2,figsize=(10,4))
 colorMap = {}
+ax[0].set_title("Hierarchical Agglomerative clustering")
+ax[1].set_title("K-mean clustering")
 for i in target:
     if target[i] in colorMap.keys():
-        plt.plot(d[i-1,0], d[i-1,1], colorMap[target[i]])
+        ax[0].plot(d[i-1,0], d[i-1,1], colorMap[target[i]],markersize=3)
     else:
         colorMap[target[i]] = color[len(colorMap)]
-        plt.plot(d[i-1, 0], d[i-1, 1], colorMap[target[i]])
+        ax[0].plot(d[i-1, 0], d[i-1, 1], colorMap[target[i]],markersize=3)
+for i in range(len(labels)):
+    ax[1].plot(d[i, 0], d[i, 1], color[labels[i]-1],markersize=3)
+
 plt.savefig("hier.jpg")
 plt.show()
-# k_mean(K, genes)
+
