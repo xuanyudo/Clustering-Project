@@ -22,8 +22,8 @@ def k_mean(K, genes):
 
     while 1:
         if centroids == centroids_new:
-            print(np.asarray(labels, dtype=float))
-            print(expect)
+            #print(np.asarray(labels, dtype=float))
+            #print(expect)
             return cluster, labels
         else:
             centroids = centroids_new
@@ -53,7 +53,7 @@ def hier_agg_cluster(K):
         # print(genes_cluster[genes_target[gene[0]]])
         if len(genes_cluster) == K:
             # print(genes_cluster)
-            print(genes_cluster)
+            #print(genes_cluster)
             return genes_cluster, genes_target
 
 
@@ -139,7 +139,7 @@ def euclidean(point1, point2):
 
 
 cluster, density_labels, out = density_cluster(min_supp, ep)
-c, target = hier_agg_cluster(K)
+hier_agg_c, target = hier_agg_cluster(K)
 k_mean_cluster, labels = k_mean(K, genes)
 testData = data[:, 2:]
 pca = PCA(n_components=len(testData[0]))
@@ -149,7 +149,10 @@ colorMap = {}
 ax[0].set_title("Hierarchical Agglomerative clustering")
 ax[1].set_title("K-mean clustering")
 ax[2].set_title("density clustering")
+c = []
+targetList = []
 for i in target:
+    targetList.append(target[i])
     if target[i] in colorMap.keys():
         ax[0].plot(d[i - 1, 0], d[i - 1, 1], colorMap[target[i]], markersize=3)
     else:
@@ -164,9 +167,71 @@ for i in cluster:
     c = i
     legends_label.append("cluster {}".format(i + 1))
 
+
+
 ax[2].plot(d[out, 0], d[out, 1], color[c + 1], markersize=3)
 legends_label.append("outlier")
 ax[2].legend(legends_label,
            loc='upper right')
 plt.savefig("hier.jpg")
 plt.show()
+
+
+print("##########") # expect
+
+expected_labels = np.asarray(expect,dtype=int);
+print(len(expected_labels) )# expect
+
+kmeans_labels = np.asarray(labels,dtype=int);
+print(len(kmeans_labels)) # kmeans
+
+ # parse label list for density absed
+density_parsed_labels = [-1]*len(data)
+for label, values in cluster.items():
+    for value in values:
+        density_parsed_labels[int(value)-1] = label
+
+
+print(len(density_parsed_labels))
+hierachy_parsed_labels = [-1]*len(data)
+for label, values in hier_agg_c.items():
+    for value in values:
+        hierachy_parsed_labels[int(value)-1] = label
+print(len(hierachy_parsed_labels))
+
+
+def calculate_jaccard_matrix( data, cluster1 ):
+    matrix_obj = np.zeros((len(data),len(data)));
+    for x_in in range(len(data)):
+        for y_in in range(len(data)):
+            if(cluster1[int(data[x_in, 0])-1] ==  cluster1[int(data[y_in, 0])-1]):
+                matrix_obj[y_in][x_in] = 1
+    return matrix_obj
+
+
+
+expected_matrix = calculate_jaccard_matrix(data, expected_labels);
+kmeans_matrix = calculate_jaccard_matrix(data, kmeans_labels);
+hierachy_parsed_matrix = calculate_jaccard_matrix(data, hierachy_parsed_labels);
+density_parsed_matrix = calculate_jaccard_matrix(data, density_parsed_labels);
+
+
+def perform_jaccard_coefficient(truth, matrix2):
+    same = 0;
+    diffr = 0;
+    false_pos = 0;
+    for ind_y, vector in enumerate(truth):
+        for ind_x, value in enumerate(vector):
+            if(truth[ind_y, ind_x] == 1 and truth[ind_y, ind_x] == matrix2[ind_y, ind_x]):
+                same+=1
+            elif(truth[ind_y, ind_x] != matrix2[ind_y, ind_x]):
+                diffr+=1
+            else:
+                false_pos+=1
+    return same/(same+diffr)
+
+kmean_vs_gtruth = perform_jaccard_coefficient(expected_matrix, kmeans_matrix)
+hierachy_vs_gtruth = perform_jaccard_coefficient(expected_matrix, hierachy_parsed_matrix)
+density_vs_gtruth = perform_jaccard_coefficient(expected_matrix, density_parsed_matrix)
+print(kmean_vs_gtruth, hierachy_vs_gtruth, density_vs_gtruth)
+
