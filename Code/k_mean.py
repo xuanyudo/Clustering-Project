@@ -14,9 +14,15 @@ min_supp = 3
 ep = 1
 
 
-def k_mean(K, genes):
-    cluster = {i: data[len(data) * i // K:len(data) * (i + 1) // K, 2:] for i in range(K)}
-    centroids = compute_new_centroids(cluster)
+def k_mean(K, num_iter=0, center=[]):
+    if center == []:
+        suffle_data = data.copy()
+        np.random.shuffle(suffle_data)
+
+        cluster = {i: suffle_data[len(data) * i // K:len(data) * (i + 1) // K, 2:] for i in range(K)}
+        centroids = compute_new_centroids(cluster)
+    else:
+        centroids = [genes[c] for c in center]
 
     labels, cluster, centroids_new = add_to_cluster(centroids)
 
@@ -140,7 +146,7 @@ def euclidean(point1, point2):
 
 cluster, density_labels, out = density_cluster(min_supp, ep)
 c, target = hier_agg_cluster(K)
-k_mean_cluster, labels = k_mean(K, genes)
+k_mean_cluster, labels = k_mean(K, 0, [])
 testData = data[:, 2:]
 pca = PCA(n_components=len(testData[0]))
 d = pca.fit_transform(testData)
@@ -167,6 +173,6 @@ for i in cluster:
 ax[2].plot(d[out, 0], d[out, 1], color[c + 1], markersize=3)
 legends_label.append("outlier")
 ax[2].legend(legends_label,
-           loc='upper right')
+             loc='upper right')
 plt.savefig("hier.jpg")
 plt.show()
