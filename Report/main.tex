@@ -69,38 +69,61 @@ Density Based Clustering does not dependent on cluster number hyper-parameter k.
 2). Find all core points within eps, add all discovered points within the range of eps of those points and add them into a new cluster.
 
 3) If there are anymore undiscovered core point, repeat step 1.\\
-Note that there is way to determine eps and MinPts by plotting sorted distance of every point to its kth nearest neighbor, but for this project, we are using MinPts = 3 and eps = 1.
+Note that there is way to determine eps and MinPts by plotting sorted distance of every point to its kth nearest neighbor, but for this project, we are using MinPts = 4 and eps = 1.
 \subsection{Map Reduce K-Mean}
 TODO
 \section{Model Implementation}
 \subsection{Implementation of K-Means}
-For the implementation of K-means, We have used K=5 for number of clusters. And we have implemented it similar to the pseudo code. For initialization, we split data into K clusters and generate centers from those. And then for every genes, We compute the closest center calculated using euclidean distance and add the gene into that cluster. To calculate centers, we add every points together by dimension and divide by cluster length, Then we repeat until calculated centroid is same as previous centroid.
+For the implementation of K-means, We have used K=5 for number of clusters. And we have implemented it similar to the pseudo code. For initialization, we split data into K random clusters with equal length and generate centers from those. And then for every genes, We compute the closest center calculated using euclidean distance and add the gene into that cluster. To calculate centers, we add every points together by dimension and divide by cluster length, Then we repeat until calculated centroid is same as previous centroid. We also provide options for initializing centroid which tester can set any K points to be the initial cluster center. In order to improve clustering result accuracy, we repeat k-mean algorithm N(num_iter) times and compute jaccard coefficients with our result and ground truth label. Lastly, we take the cluster result with highest jaccard coeffiecient value as our optimal k-mean result.
+
+
 \subsection{Implementation of Hierarchical Agglomerative Clustering with Single Link(Minimal)}
-TODO
+(1) initialize all node itself as a cluster. Also every node has a target cluster initially to themselves. (2) we use euclidean distance to calculate distant between all node to others and put the distant in ascending order. (3) keep popping from the distant list and merge two clusters to one and set the target cluster of second one to the first and then delete the second cluster. (4) Based on our K value, we stop step (3) until there are only K number of cluster.
 
 \subsection{Implementation of Density Based Clustering}
-TODO
+For density based clustering, we can two parameters which are search range(ep) and minimum numbers of point need to be explored(min\_supp). (1) iterating through all node to find out all core, border and outlier node by counting nodes explored (if ${>=}$min\_supp then core, if 0 then outlier, otherwise border). (2) iterating through all core point, for each of core point initializes a cluster with core point in it and add all explored points into a queue and cluster and keep popping out the node from the queue and marks it as explored point, if the node is core point, add all sub_node explored by that point, keep above process until all node marked as explored. (3) if the node is a outlier, we put it into a separate list for visualization purpose.
 
 \subsection{Implementation of Map Reduce Clustering}
 TODO
 \section{Experiment Result}
+
+
 For Data visualization, we are using PCA algorithm from sklearn.decomposition package. And as you see, the resulting graph includes one huge cluster and is hard to visually separate into clusters. And for performance of each algorithm, we use Jaccard's coefficient to determine.
+
+\subsection{Result K-Means}
+
+\includegraphics[width=350pt]{k_meancho.jpg}\\
+\includegraphics[width=350pt]{k_meaniyer.jpg}
+
+As you see from Fig.1, According to nature of K-means, namely poor performance toward cluster of different sizes and different density, K-means algorithm had separated the big cluster into K cluster of similar size, and split the denser cluster toward the left side into two clusters. From the graph we can conclude k-means does not perform well in this situation.
+
+\subsection{Result Hierarchical Agglomerative Clustering with Single Link(min)}
+
+\includegraphics[width=350pt]{hiercho.jpg}
+
+\includegraphics[width=350pt]{hieriyer.jpg}
+
+As you see from result in Fig.1, Due to Inter-Cluster Distance function min being sensitive to outliers and noises, those points that located far away from center cluster put into it's own cluster. And the big cluster is kept as one cluster
+
+\subsection{Result of Density Based}
+
+\includegraphics[width=350pt]{densitycho.jpg}
+
+\includegraphics[width=350pt]{densityiyer.jpg}
+
+Due to high amount of minimum point need to be explored by node, there exist lots of outlier nodes.
+
 \begin{figure}
 	\centering
-	\begin{subfigure}{1.0\textwidth}
-		\centering\includegraphics[width=0.7\textwidth]{hier.jpg}
+	\begin{subfigure}{1\textwidth}
+		\centering\includegraphics[width=1\textwidth]{all_three.jpg}
 		\caption{Hierarchical Agglomerative, K-Means and Density Based Algorithm}
 	\end{subfigure}
 	\caption{(a) Hierarchical Agglomerative clustering result visualization of cho.txt, (b) K-Means clustering result visualization of cho.txt, (c) Density Based clustering result visualization of cho.txt.}
 	\label{fig2}
 \end{figure}
-\subsection{Result K-Means}
-As you see from Fig.1, According to nature of K-means, namely poor performance toward cluster of different sizes and different density, K-means algorithm had separated the big cluster into K cluster of similar size, and split the denser cluster toward the left side into two clusters. From the graph we can conclude k-means does not perform well in this situation.
+\subsection{Result of Map Reduce Clustering}
 
-\subsection{Result Hierarchical Agglomerative Clustering with Single Link(min)}
-As you see from result in Fig.1, Due to Inter-Cluster Distance function min being sensitive to outliers and noises, those points that located far away from center cluster put into it's own cluster. And the big cluster is kept as one cluster
-\subsection{Result Density Based}
 TODO
-\subsection{Result Map Reduce Clustering}
-TODO
+
 \end{document}

@@ -4,12 +4,13 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import random
 
-data = np.genfromtxt("cho.txt", delimiter='\t')
+file = "cho"
+data = np.genfromtxt(file+'.txt', delimiter='\t')
 
 expect = data[:, 1]
 genes = {gene: list(details) for gene, details in zip(data[:, 0], data[:, 2:])}
 K = 5
-color = ['bo', 'ro', 'go', 'co', 'mo', 'yo', 'ko', "#abcdef", '#ff0099', '#ee3355', '#512379']
+color = ['bo', 'ro', 'go', 'co', 'mo', 'yo', 'ko', "b^", 'r^', 'g^', 'c^']
 colorMap = {}
 min_supp = 4
 ep = 1
@@ -212,88 +213,66 @@ def draw_all():
     for i in target:
         targetList.append(target[i])
         if target[i] in colorMap.keys():
-            ax[0].plot(d[i - 1, 0], d[i - 1, 1], colorMap[target[i]], markersize=3)
+            ax[0].plot(d[i - 1, 0], d[i - 1, 1], colorMap[target[i]], markersize=4)
         else:
             colorMap[target[i]] = color[len(colorMap)]
-            ax[0].plot(d[i - 1, 0], d[i - 1, 1], colorMap[target[i]], markersize=3)
+            ax[0].plot(d[i - 1, 0], d[i - 1, 1], colorMap[target[i]], markersize=4)
     for i in range(len(labels)):
-        ax[1].plot(d[i, 0], d[i, 1], color[labels[i] - 1], markersize=3)
+        ax[1].plot(d[i, 0], d[i, 1], color[labels[i] - 1], markersize=4)
     c = 0
     legends_label = []
     for i in cluster:
-        ax[2].plot(d[cluster[i], 0], d[cluster[i], 1], color[i], markersize=3)
+        ax[2].plot(d[cluster[i], 0], d[cluster[i], 1], color[i], markersize=4)
         c = i
         legends_label.append("cluster {}".format(i + 1))
 
-    ax[2].plot(d[out, 0], d[out, 1], color[c + 1], markersize=3)
+    ax[2].plot(d[out, 0], d[out, 1], color[c + 1], markersize=4)
     legends_label.append("outlier")
     ax[2].legend(legends_label,
                  loc='upper right')
-    plt.savefig("all_three.jpg")
+    plt.savefig("all_three{}.jpg".format(file))
     plt.show()
-
-    print("##########")  # expect
-
-    expected_labels = np.asarray(expect, dtype=int)
-    print(len(expected_labels))  # expect
-
-    kmeans_labels = np.asarray(labels, dtype=int)
-    print(len(kmeans_labels))  # kmeans
-
-    # parse label list for density absed
-    density_parsed_labels = [-1] * len(data)
-    for label, values in cluster.items():
-        for value in values:
-            density_parsed_labels[int(value) - 1] = label
-
-    print(len(density_parsed_labels))
-    hierachy_parsed_labels = [-1] * len(data)
-    for label, values in hier_agg_c.items():
-        for value in values:
-            hierachy_parsed_labels[int(value) - 1] = label
-    print(len(hierachy_parsed_labels))
-
-    expected_matrix = calculate_jaccard_matrix(data, expected_labels)
-    kmeans_matrix = calculate_jaccard_matrix(data, kmeans_labels)
-    hierachy_parsed_matrix = calculate_jaccard_matrix(data, hierachy_parsed_labels)
-    density_parsed_matrix = calculate_jaccard_matrix(data, density_parsed_labels)
-
-    kmean_vs_gtruth = perform_jaccard_coefficient(expected_matrix, kmeans_matrix)
-    hierachy_vs_gtruth = perform_jaccard_coefficient(expected_matrix, hierachy_parsed_matrix)
-    density_vs_gtruth = perform_jaccard_coefficient(expected_matrix, density_parsed_matrix)
-    print(kmean_vs_gtruth, hierachy_vs_gtruth, density_vs_gtruth)
 
 
 def draw_k_mean():
-    plt.title("K-mean clustering")
+    plt.title("K-mean clustering {}".format(file))
     for i in range(len(labels)):
-        plt.plot(d[i, 0], d[i, 1], color[labels[i] - 1], markersize=3)
+        plt.plot(d[i, 0], d[i, 1], color[labels[i] - 1], markersize=4)
+
+    plt.savefig("k_mean{}.jpg".format(file))
     plt.show()
 
 
 def draw_heir():
     targetList = []
-    plt.title("Hierarchical Agglomerative clustering")
+    plt.title("Hierarchical Agglomerative clustering {}".format(file))
     for i in target:
         targetList.append(target[i])
         if target[i] in colorMap.keys():
-            plt.plot(d[i - 1, 0], d[i - 1, 1], colorMap[target[i]], markersize=3)
+            plt.plot(d[i - 1, 0], d[i - 1, 1], colorMap[target[i]], markersize=4)
         else:
             colorMap[target[i]] = color[len(colorMap)]
-            plt.plot(d[i - 1, 0], d[i - 1, 1], colorMap[target[i]], markersize=3)
+            plt.plot(d[i - 1, 0], d[i - 1, 1], colorMap[target[i]], markersize=4)
+    plt.savefig("hier{}.jpg".format(file))
     plt.show()
 
 
+
 def draw_dense():
-    plt.title("density clustering")
+    plt.title("density clustering {}".format(file))
     legends_label = []
     c = 0
     for i in cluster:
-        plt.plot(d[cluster[i], 0], d[cluster[i], 1], color[i], markersize=3)
+        plt.plot(d[cluster[i], 0], d[cluster[i], 1], color[i], markersize=4)
         c = i
         legends_label.append("cluster {}".format(i + 1))
 
-    plt.plot(d[out, 0], d[out, 1], color[c + 1], markersize=3)
+    plt.plot(d[out, 0], d[out, 1], color[c + 1], markersize=4)
+    legends_label.append("outlier")
+    plt.legend(legends_label,
+                 loc='upper right')
+    plt.savefig("density{}.jpg".format(file))
+
     plt.show()
 
 
@@ -309,10 +288,10 @@ if __name__ == '__main__':
     pca = PCA(n_components=len(testData[0]))
     d = pca.fit_transform(testData)
 
-    # draw_k_mean()
-    # draw_heir()
-    # draw_dense()
-    # draw_all()
+    draw_k_mean()
+    draw_heir()
+    draw_dense()
+    draw_all()
 
     print("##########")  # expect
 
