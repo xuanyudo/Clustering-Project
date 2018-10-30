@@ -17,4 +17,4 @@ if [ -f $file ] ; then
     sudo rm $file
 fi
 sudo ../bin/hadoop dfs -copyToLocal /Kmeans/Output/output_final/part-r-00000 ./
-python KmeansHadoop.py $1 part-r-00000
+python result_visualization.py $1 part-r-00000
