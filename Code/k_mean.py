@@ -4,17 +4,19 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import random
 
-file = "iyer"
+file = "cho"
 data = np.genfromtxt(file+'.txt', delimiter='\t')
 
 expect = data[:, 1]
 genes = {gene: list(details) for gene, details in zip(data[:, 0], data[:, 2:])}
-K = 10
+K = 5
 color = ['bo', 'ro', 'go', 'co', 'mo', 'yo', 'ko', "b^", 'r^', 'g^', 'c^']
 colorMap = {}
 min_supp = 4
 ep = 1
 num_iter = 10
+max_iter = 1000
+
 init_center = []
 
 def calculate_jaccard_matrix(data, cluster1):
@@ -41,7 +43,7 @@ def perform_jaccard_coefficient(truth, matrix2):
     return (same) / (same + diffr)
 
 
-def k_mean(K, num_iter=0, center=[]):
+def k_mean(K, max_iter=100000, center=[]):
     best_cluster = {}
     best_label = []
     best_j_coe = 0.0
@@ -60,23 +62,23 @@ def k_mean(K, num_iter=0, center=[]):
 
         labels, cluster, centroids_new = add_to_cluster(centroids)
 
-        while 1:
+        for n in range(max_iter):
             if centroids == centroids_new:
                 # print(np.asarray(labels, dtype=float))
                 # print(expect)
-                kmeans_labels = np.asarray(labels, dtype=int)
-                kmeans_matrix = calculate_jaccard_matrix(data, kmeans_labels)
-                kmean_vs_gtruth = perform_jaccard_coefficient(expected_matrix, kmeans_matrix)
-                if kmean_vs_gtruth > best_j_coe:
-                    best_j_coe = kmean_vs_gtruth
-                    best_cluster = cluster
-                    best_label = labels
-
                 break
                 # return cluster, labels
             else:
                 centroids = centroids_new
                 labels, cluster, centroids_new = add_to_cluster(centroids)
+        kmeans_labels = np.asarray(labels, dtype=int)
+        kmeans_matrix = calculate_jaccard_matrix(data, kmeans_labels)
+        kmean_vs_gtruth = perform_jaccard_coefficient(expected_matrix, kmeans_matrix)
+        if kmean_vs_gtruth > best_j_coe:
+            best_j_coe = kmean_vs_gtruth
+            best_cluster = cluster
+            best_label = labels
+
     return best_cluster, best_label
 
 
@@ -280,7 +282,7 @@ if __name__ == '__main__':
 
     cluster, density_labels, out = density_cluster(min_supp, ep)
     hier_agg_c, target = hier_agg_cluster(K)
-    k_mean_cluster, labels = k_mean(K, num_iter, init_center)
+    k_mean_cluster, labels = k_mean(K, max_iter, init_center)
 
     print(cluster)
     print(hier_agg_c)
