@@ -18,6 +18,20 @@ This repo includes the implementations of three clustering algorithms to find cl
   
 <h2> adjust above parameters and run k_mean.py with any python IDE </h2>
 
+# Information for running Hadoop Kmeans:
+
+We summarized all necessary bash commands into the KM_try.sh file.
+
+To reproduce the results in our report, please get to the KM_Hadoop_code directory, and run:
+
+(1) ./KM_try.sh cho.txt centroids_cho.txt KM_try18.jar
+
+(2) ./KM_try.sh iyer.txt centroids_iyer.txt KM_try18.jar
+
+To reproduce the results we show during the demo, please run:
+
+./KM_try.sh new_dataset_1.txt centroids_new2.txt KM_try18.jar
+
 # Testing Output
 
 ![alt text](https://github.com/xuanyudo/Clustering-Project/blob/master/Report/all_threecho.jpg)
