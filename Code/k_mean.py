@@ -4,12 +4,12 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import random
 
-file = "cho"
+file = "iyer"
 data = np.genfromtxt(file+'.txt', delimiter='\t')
 
 expect = data[:, 1]
 genes = {gene: list(details) for gene, details in zip(data[:, 0], data[:, 2:])}
-K = 5
+K = 10
 color = ['bo', 'ro', 'go', 'co', 'mo', 'yo', 'ko', "b^", 'r^', 'g^', 'c^']
 colorMap = {}
 min_supp = 4
@@ -40,7 +40,7 @@ def perform_jaccard_coefficient(truth, matrix2):
                 diffr += 1
             else:
                 false_pos += 1
-    return (same) / (same + diffr)
+    return (same+false_pos) / (same+false_pos + diffr)
 
 
 def k_mean(K, max_iter=100000, center=[]):
@@ -286,10 +286,12 @@ if __name__ == '__main__':
 
     print(cluster)
     print(hier_agg_c)
+    # plot_PCA(data,labels,"k-mean")
     testData = data[:, 2:]
     pca = PCA(n_components=len(testData[0]))
-    d = pca.fit_transform(testData)
-
+    testData_T = np.matrix(testData).T
+    d = pca.fit(testData_T).components_
+    d = np.transpose(d)
     draw_k_mean()
     draw_heir()
     draw_dense()
