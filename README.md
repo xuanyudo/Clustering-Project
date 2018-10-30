@@ -2,7 +2,7 @@
 This repo includes the implementations of three clustering algorithms to find clusters of genes that exhibit similar expression profiles: K-means, Hierarchical Agglomerative clustering with Single Link (Min), and one from (density-based, mixture model, spectral).
 
 # infomation for tester:
-<h2>Parmeters to adjust</h2>
+<h2>Parmeters to adjust (in the top of the code)</h2>
 <ul>
   <li> <b>file </b>: filename, default = "cho" </li>
   <li><b>K</b>: numbers of cluster for k-mean and hierarchical clustering, default = 5 </li>
