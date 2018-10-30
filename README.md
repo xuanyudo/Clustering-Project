@@ -12,6 +12,8 @@ This repo includes the implementations of three clustering algorithms to find cl
  </li>
   <li><b>num_iter</b>: number of iteration for finding best k mean clustering result, default = 10
  </li>
+  <li><b>max_iter</b>: number of iteration for compute centroids, if the cluster not stable until max_iter, the program will just take current clustering result as our k-mean result, default = 1000
+ </li>
   <li><b>init_center</b>: set initial clustering center, defalut = []</li></ul>
   
 <h2> adjust above parameters and run k_mean.py with any python IDE </h2>
