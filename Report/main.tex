@@ -111,7 +111,7 @@ As you see from result in Fig.1, Due to Inter-Cluster Distance function min bein
 
 \includegraphics[width=350pt]{densityiyer.jpg}
 
-Due to high amount of minimum point need to be explored by node, there exist lots of outlier nodes.
+Due to high amount of minimum point need to be explored by node, there exist lots of outlier nodes. Because density based clustering perform badly with dataset contains varying density, that's why it performs bad in cho.txt which doesn't contains any outlier. however it performs slightly better than hierarchical clustering result after tuning the minsupp and search range in iyer.txt because density based clustering can explore outlier.
 
 \begin{figure}
 	\centering
@@ -122,7 +122,30 @@ Due to high amount of minimum point need to be explored by node, there exist lot
 	\caption{(a) Hierarchical Agglomerative clustering result visualization of cho.txt, (b) K-Means clustering result visualization of cho.txt, (c) Density Based clustering result visualization of cho.txt.}
 	\label{fig2}
 \end{figure}
+\begin{figure}
+	\centering
+	\begin{subfigure}{1\textwidth}
+		\centering\includegraphics[width=1\textwidth]{all_threeiyer.jpg}
+		\caption{Hierarchical Agglomerative, K-Means and Density Based Algorithm}
+	\end{subfigure}
+	\caption{(a) Hierarchical Agglomerative clustering result visualization of iyer.txt, (b) K-Means clustering result visualization of iyer.txt, (c) Density Based clustering result visualization of iyer.txt.}
+	\label{fig3}
+\end{figure}
+Jaccard-coefficients of cho.txt:\\
+Kmean: 0.4100590299936184\\ 
+Hierchical: 0.22839497757358454\\
+Density: 0.20433377280653256\\
+
+Jaccard-coefficients of iyer.txt:\\
+Kmean: 0.4265362385770463\\ 
+Hierarchical: 0.15824309696642858\\
+Density: 0.28350284799805836\\
+
+As you can see Kmean algorithm gives the best clustering result for these two dataset. Density based clustering perform well on dataset contains outliers. Hierarchical clustering is sensitive to noise and 
+outlier, which gives the worrest performance.
+
 \subsection{Result of Map Reduce Clustering}
+
 
 TODO
 

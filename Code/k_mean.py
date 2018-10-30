@@ -4,12 +4,12 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import random
 
-file = "cho"
+file = "iyer"
 data = np.genfromtxt(file+'.txt', delimiter='\t')
 
 expect = data[:, 1]
 genes = {gene: list(details) for gene, details in zip(data[:, 0], data[:, 2:])}
-K = 5
+K = 10
 color = ['bo', 'ro', 'go', 'co', 'mo', 'yo', 'ko', "b^", 'r^', 'g^', 'c^']
 colorMap = {}
 min_supp = 4
